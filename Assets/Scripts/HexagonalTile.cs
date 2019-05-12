@@ -1,4 +1,8 @@
-﻿using System;
+﻿// odd-q” vertical layout. shoves odd columns down.
+// opposite : even-q” vertical layout. shoves even columns down
+#define ODD_Q_VERTICAL_LAYOUT 
+
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -65,7 +69,11 @@ public class HexagonalTile : MonoBehaviour
     public void SetPosition(int columnIndex, int rowIndex)
     {
         PosX = columnIndex;
+#if ODD_Q_VERTICAL_LAYOUT
+        PosY = rowIndex - (columnIndex + (columnIndex & 1)) / 2;
+#else
         PosY = rowIndex - (columnIndex - (columnIndex & 1)) / 2;
+#endif
         PosZ = -PosX - PosY;
     }
 
@@ -73,7 +81,12 @@ public class HexagonalTile : MonoBehaviour
     {
         float posX = ColumnIndex * tileSize.x;
         float posY = RowIndex * tileSize.y;
+
+#if ODD_Q_VERTICAL_LAYOUT
+        posY -= (ColumnIndex % 2) * (tileSize.y * 0.5f);
+#else
         posY += (ColumnIndex % 2) * (tileSize.y * 0.5f);
+#endif
 
         transform.localPosition = new Vector3(posX, posY);
     }
